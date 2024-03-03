@@ -104,13 +104,15 @@ class Record:
     def __str__(self):
         if len(self.phones) > 0 and self.birthday:
             return f"Contact name: {self.name}, phones: {', '.join(p.value for p in self.phones)}; birthday: {self.birthday}"
+        elif len(self.phones) > 0:
+            return f"Contact name: {self.name}, phones: {', '.join(p.value for p in self.phones)}"
         else:
             return f"Contact name: {self.name}, birthday: {self.birthday}"
 
     def to_dict(self):
         return {
             "name": self.name.to_dict(),
-            "birthday": self.birthday.to_dict(),
+            "birthday": self.birthday.to_dict() if self.birthday else '',
             "phones": [phone.to_dict() for phone in self.phones]
         }
 
@@ -154,7 +156,7 @@ class AddressBook(UserDict):
             return f"Birthday data for Record with name {name} is not provided"
 
     def get_next_week_birthdays(self):
-        result = [{"name": key, "birthday": value.birthday.value} for key, value in self.items() if value]
+        result = [{"name": key, "birthday": value.birthday.value} for key, value in self.items() if value and value.birthday]
 
         return get_birthdays_per_week(result)
 
@@ -182,7 +184,8 @@ class AddressBook(UserDict):
         address_book = cls()
         for record_name, record_data in dict_data.items():
             record = Record(record_data['name'])
-            record.birthday = Birthday(record_data['birthday'])
+            if len(record_data['birthday']) > 0:
+                record.birthday = Birthday(record_data['birthday'])
             record.phones = [Phone(phone) for phone in record_data['phones']]
             address_book[record_name] = record
         return address_book
