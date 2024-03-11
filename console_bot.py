@@ -1,6 +1,8 @@
+"""Module providing a function printing bot messages."""
 from console_bot.input_manager import InputManager
 
 def print_help():
+    """Function printing help messagefor bot."""
     help_text = """
 Available commands:
   hello                          - Ask the bot how it can help you.
@@ -20,6 +22,7 @@ Available commands:
     print(help_text)
 
 def main():
+    """Central function printing all the commands"""
     input_manager = InputManager()
     print("Welcome to the assistant bot!")
 
